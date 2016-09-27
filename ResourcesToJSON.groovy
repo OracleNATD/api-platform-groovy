@@ -29,12 +29,19 @@ println "domainId = " + resourcesMap.get('domains')
 println "accountId = " + resourcesMap.get('accounts')
 println ""
 
+//Get the query parameters
+def params = context.clientRequest.getQueryParameters()
+println "params = " + params
+def clientRequestId = params.get('clientRequestId');
+println "clientRequestId = " + clientRequestId
+
+// Define the JSON body
 def apiAccessKey = [apiAccessKey: '364735764358']
 
 def request = [
     platformId: resourcesMap.get('platform'),
     action: 'Query',
-    clientRequestId: '2371264761-23891273',
+    clientRequestId: clientRequestId,
     objectType: 'Account',
     data: [
         domain: resourcesMap.get('domains'),
