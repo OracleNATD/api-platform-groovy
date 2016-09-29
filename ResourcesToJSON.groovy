@@ -57,4 +57,5 @@ def json = groovy.json.JsonOutput.toJson(message)
 
 println(groovy.json.JsonOutput.prettyPrint(json));
 
+context.southboundCallout.withHeader("Content-Type", "application/json")
 context.southboundCallout.withBodyAsObject(json)
