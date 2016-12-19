@@ -4,7 +4,7 @@ def messageString =
     "clientInfo": {\
         "apiAccessKey": "364735764358"\
     },\
-    "request": [\
+    "requestArray": [\
         {\
             "platformId": "NSI",\
             "action": "Query",\
@@ -18,40 +18,39 @@ def messageString =
     ]\
 }'
 
-//messageString = context.clientRequest.getBodyAsType(Object)
-//println(messageString)
+
+/*
+def body = context.clientRequest.getBodyAsType(String.class)
+println "body = ${body}"
+
+def parser= new groovy.json.JsonSlurper()
+Map payload = (Map) parser.parseText(body)
+Map abc = (Map)payload.abcString
+value = abc.def
+println "field=${value}"
+context.southboundCallout.withHeader("nick", value)
+*/
 
 // Convert to Groovy Object
 def slurper = new groovy.json.JsonSlurper()
-def messageBody = slurper.parseText(messageString)
-println(messageBody)
+def messageBody = (Map) slurper.parseText(messageString)
+println messageBody
 println ""
 
-// The platform's Groovy parser will not accept this format...
-// def platformId = messageBody.request[0].platformId
-
-def request = messageBody["request"] ?: "No Request";
-println (request)
+def requestArray =  (ArrayList) messageBody["requestArray"] ?: "No Request";
+println requestArray
 println("");
 
-// Nor this format...
-// platformId = request["platformId"][0];
+def request = "";
+requestArray.each {
+    request = it;
+    println request;
+}
 
-def platformId = request["platformId"].toString();
-platformId = platformId.replace('[', '');
-platformId = platformId.replace(']', '');
-
-def clientRequestId = request["clientRequestId"].toString();
-clientRequestId = clientRequestId.replace('[', '');
-clientRequestId = clientRequestId.replace(']', '');
-
-def domainId = request["data"]["domain"].toString();
-domainId = domainId.replace('[', '');
-domainId = domainId.replace(']', '');
-
-def accountId = request["data"]["accountId"].toString();
-accountId = accountId.replace('[', '');
-accountId = accountId.replace(']', '');
+def platformId = request.platformId
+def clientRequestId = request.clientRequestId
+def domainId = request.data.domain
+def accountId = request.data.accountId
 
 // Build the URL string
 def urlString = "platforms/" + platformId + "/domains/" + domainId + "/accounts/" + accountId + "?clientRequestId=" + clientRequestId
