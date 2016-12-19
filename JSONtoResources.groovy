@@ -1,5 +1,5 @@
 // Sample JSON body for testing...
-def messageString =
+def body =
 '{\
     "clientInfo": {\
         "apiAccessKey": "364735764358"\
@@ -33,26 +33,29 @@ context.southboundCallout.withHeader("nick", value)
 
 // Convert to Groovy Object
 def slurper = new groovy.json.JsonSlurper()
-def messageBody = (Map) slurper.parseText(messageString)
+def messageBody = (Map) slurper.parseText(body)
 println messageBody
 println ""
 
-def requestArray =  (ArrayList) messageBody["requestArray"] ?: "No Request";
+def requestArray =  (ArrayList) messageBody["requestArray"] ?: "No Request"
 println requestArray
-println("");
+println ""
 
-def request = "";
+def request = ""
 requestArray.each {
-    request = it;
-    println request;
+    request = it
+    println request
 }
 
-def platformId = request.platformId
-def clientRequestId = request.clientRequestId
-def domainId = request.data.domain
-def accountId = request.data.accountId
+// The platform fails validation for
+// def platformId = request.platformId
+
+def platformId = request["platformId"]
+def clientRequestId = request["clientRequestId"]
+def domainId = request["data"]["domain"]
+def accountId = request["data"]["accountId"]
 
 // Build the URL string
 def urlString = "platforms/" + platformId + "/domains/" + domainId + "/accounts/" + accountId + "?clientRequestId=" + clientRequestId
-println (urlString)
+println urlString
 
