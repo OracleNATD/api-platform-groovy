@@ -21,10 +21,10 @@ def body =
     ]\
 }'
 
-/* 
+/*******************************************************************************
  * API Platform Call 
- *  Getting the request body 
- */
+ * Getting the request body 
+ ******************************************************************************/
 body = context.clientRequest.getBodyAsType(String.class)
 
 // Convert to Groovy Object
@@ -48,8 +48,8 @@ def urlString = "platforms/" + platformId + "/domains/" + domainId + \
 println urlString
 
 /*******************************************************************************
- *  API Platform Call
- *  Setting the request path and query string 
+ * API Platform Call
+ * Setting the request path and query string 
  ******************************************************************************/
 context.southboundCallout.withPathInfo(urlString)
 context.southboundCallout.withQueryString('clientRequestId?{$clientRequestId}')
