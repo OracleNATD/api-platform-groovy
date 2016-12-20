@@ -1,3 +1,5 @@
+def timestamp = new Date()
+println "\n *** ${timestamp} Begin Request *** \n"
 // Sample JSON body for testing...
 def body =
 '{\
@@ -19,10 +21,10 @@ def body =
 }'
 
 
-/*
-def body = context.clientRequest.getBodyAsType(String.class)
-println "body = ${body}"
 
+//body = context.clientRequest.getBodyAsType(String.class)
+//println "body = ${body}"
+/*
 def parser= new groovy.json.JsonSlurper()
 Map payload = (Map) parser.parseText(body)
 Map abc = (Map)payload.abcString
@@ -37,25 +39,16 @@ def messageBody = (Map) slurper.parseText(body)
 println messageBody
 println ""
 
-def requestArray =  (ArrayList) messageBody["requestArray"] ?: "No Request"
+def requestArray =  (ArrayList) messageBody['requestArray'] ?: "No Request"
 println requestArray
-println ""
+println "\n"
 
-def request = ""
-requestArray.each {
-    request = it
-    println request
-}
-
-// The platform fails validation for
-// def platformId = request.platformId
-
-def platformId = request["platformId"]
-def clientRequestId = request["clientRequestId"]
-def domainId = request["data"]["domain"]
-def accountId = request["data"]["accountId"]
+def platformId = requestArray['platformId']
+def clientRequestId = requestArray['clientRequestId']
+def domainId = requestArray['data']['domain']
+def accountId = requestArray['data']['accountId']
 
 // Build the URL string
 def urlString = "platforms/" + platformId + "/domains/" + domainId + "/accounts/" + accountId + "?clientRequestId=" + clientRequestId
 println urlString
-
+println "\n *** ${timestamp} End Request *** \n"
