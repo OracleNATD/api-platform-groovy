@@ -12,7 +12,7 @@ def params = 'queryString=Florida%20Gator%20Pants'
  * API Platform Call 
  * Getting the response body 
  ******************************************************************************/
-//body = context.southboundResponse.getBodyAsType(String.class)
+body = context.southboundResponse.getBodyAsType(String.class)
 println "bodyReceived"
 
 // Convert to Groovy Object
