@@ -55,20 +55,7 @@ if (messageBody['recordSetTotal'] == 0) {
     * Resubmit the request to the Backend Service URL
     ***************************************************************************/
     ((ExternalCalloutBuilder) context.createCallout().withRequestUrl(resubmitUri).withRequestMethod("GET")).build().send("storedResponse");    
-    
-    /***************************************************************************
-    * API Platform Call
-    * Update the Response 
-    ***************************************************************************/
-    HttpResponse httpResponse = (HttpResponse) context.getAttribute("storedResponse")
-    if (httpResponse != null) {
-        def respStr = httpResponse.getBodyAsType(String.class)
-        context.getClientResponse().withBodyAsObject(respStr);
-        println "New response is:\n{respStr}"
-    } else {
-        println "Update query returned null"
-    }
-        
+           
 }
 
 println "\n *** ${timestamp} End Request *** \n"
