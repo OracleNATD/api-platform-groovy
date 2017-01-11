@@ -4,9 +4,10 @@ println "\n *** ${timestamp} Begin Request *** \n"
 // Sample JSON body for testing...
 def body ='{"recordSetTotal": 0}'
 
-// Sample URI for testing...
-def uri = 'https://nodeapicontainer-gse00001975.apaas.em2.oraclecloud.com/bealls/catalog?queryString=Florida%20Gator%20Pants'
-def params = 'queryString=Florida%20Gator%20Pants'
+def params = '{queryString=Florida%20Gator%20Pants}'
+
+//Sample Backend Service URL for testing...
+def backendServiceURL = 'https://nodeapicontainer-gse00001975.apaas.em2.oraclecloud.com/bealls'
 
 /*******************************************************************************
  * API Platform Call 
@@ -30,35 +31,30 @@ if (messageBody['recordSetTotal'] == 0) {
     
     /***************************************************************************
      * API Platform Call 
-     * Getting the request path
+     * Getting the Backend Service URL
      **************************************************************************/
-    //def pathInfo = context.clientRequest.getApiPathInfo()
-    //println "receivedPath = ${pathInfo}"
+    backendServiceURL = context.getSouthboundCallout().getRequestUrl();
+    println "Backend Service URL = ${backendServiceURL}"
     
     /***************************************************************************
      * API Platform Call 
      * Getting the request query parameters
      **************************************************************************/
-    params = context.clientRequest.getQueryParameters()
+    params = context.clientRequest.getQueryParameters().toString()
     println "receivedParams = ${params}"
     
-    /***************************************************************************
-     * API Platform Call 
-     * Getting the request URI
-     **************************************************************************/
-    //def uri = context.clientRequest.getRequestURI()
-    //println "uri = ${uri}"
+    // Remove sorrounding brackets or braces
+    def cleanParams = params.substring(1, params.length()-1)    
+    println "cleanParams = ${cleanParams}"
     
-    //def resubmitUri = "${uri}&queryScope=All"
-    //println resubmitUri
+    def resubmitUri = "${backendServiceURL}?${cleanParams}&queryScope=All"
+    println "resubmitUri = ${resubmitUri}"
     
     /***************************************************************************
     * API Platform Call
-    * Setting the request path and query string 
+    * Resubmit the request to the Backend Service URL
     ***************************************************************************/
-    //context.southboundCallout.withPathInfo(urlString)
-    context.southboundCallout.withQueryString($receivedParams}&QueryScope='All')
-    
+    ((ExternalCalloutBuilder) context.createCallout().withRequestUrl(resubmtUri).withRequestMethod("GET")).build().send("storedResponse");    
     
         
 }
