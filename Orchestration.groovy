@@ -47,15 +47,27 @@ if (messageBody['recordSetTotal'] == 0) {
     def cleanParams = params.substring(1, params.length()-1)    
     println "cleanParams = ${cleanParams}"
     
-    def resubmitUri = "${backendServiceURL}?${cleanParams}&queryScope=All"
+    def resubmitUri = "${backendServiceURL}/catalog?${cleanParams}&queryScope=All"
     println "resubmitUri = ${resubmitUri}"
     
     /***************************************************************************
     * API Platform Call
     * Resubmit the request to the Backend Service URL
     ***************************************************************************/
-    ((ExternalCalloutBuilder) context.createCallout().withRequestUrl(resubmtUri).withRequestMethod("GET")).build().send("storedResponse");    
+    ((ExternalCalloutBuilder) context.createCallout().withRequestUrl(resubmitUri).withRequestMethod("GET")).build().send("storedResponse");    
     
+    /***************************************************************************
+    * API Platform Call
+    * Update the Response 
+    ***************************************************************************/
+    HttpResponse httpResponse = (HttpResponse) context.getAttribute("storedResponse")
+    if (httpResponse != null) {
+        def respStr = httpResponse.getBodyAsType(String.class)
+        context.getClientResponse().withBodyAsObject(respStr);
+        println "New response is:\n{respStr}"
+    } else {
+        println "Update query returned null"
+    }
         
 }
 
