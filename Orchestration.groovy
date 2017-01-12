@@ -58,7 +58,7 @@ if (messageBody['recordSetTotal'] == 0) {
     def cleanParams = params.substring(1, params.length()-1)    
     println "cleanParams = ${cleanParams}"
     
-    def resubmitUri = "${backendServiceURL}${apiPath}?${cleanParams}&queryScope=All"
+    def resubmitUri = "${backendServiceURL}${apiPath}?${cleanParams}&minMatch=2%3C90%25"
     println "resubmitUri = ${resubmitUri}"
     
     /***************************************************************************
