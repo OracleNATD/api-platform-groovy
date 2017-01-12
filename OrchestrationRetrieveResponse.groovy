@@ -19,7 +19,5 @@ println "\n *** ${timestamp} Begin Request *** \n"
     } else {
         println "Nothing found in storedResponse"
     }
-        
-}
 
 println "\n *** ${timestamp} End Request *** \n"
