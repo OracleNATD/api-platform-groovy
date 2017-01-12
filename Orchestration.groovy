@@ -4,6 +4,10 @@ println "\n *** ${timestamp} Begin Request *** \n"
 // Sample JSON body for testing...
 def body ='{"recordSetTotal": 0}'
 
+// Sample API path for testing
+def apiPath='catalog'
+
+// Sample parameters for testing...
 def params = '{queryString=Florida%20Gator%20Pants}'
 
 //Sample Backend Service URL for testing...
@@ -38,6 +42,13 @@ if (messageBody['recordSetTotal'] == 0) {
     
     /***************************************************************************
      * API Platform Call 
+     * Getting the API Path
+     **************************************************************************/
+    apiPath = context.clientRequest.getApiPathInfo()
+    println "API Path = ${apiPath}"    
+    
+    /***************************************************************************
+     * API Platform Call 
      * Getting the request query parameters
      **************************************************************************/
     params = context.clientRequest.getQueryParameters().toString()
@@ -47,7 +58,7 @@ if (messageBody['recordSetTotal'] == 0) {
     def cleanParams = params.substring(1, params.length()-1)    
     println "cleanParams = ${cleanParams}"
     
-    def resubmitUri = "${backendServiceURL}/catalog?${cleanParams}&queryScope=All"
+    def resubmitUri = "${backendServiceURL}${apiPath}?${cleanParams}&queryScope=All"
     println "resubmitUri = ${resubmitUri}"
     
     /***************************************************************************
