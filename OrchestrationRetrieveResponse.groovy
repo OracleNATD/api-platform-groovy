@@ -9,8 +9,12 @@ println "\n *** ${timestamp} Begin Request *** \n"
     if (httpResponse != null) {
         def respStr = httpResponse.getBodyAsType(String.class)
         context.getClientResponse().withBodyAsObject(respStr);
-        context.southboundCallout.withHeader("Content-Type", "application/json")
-        context.southboundCallout.withBodyAsObject(respStr)
+        
+        def length = httpResponse.getHeader("Content-Length")
+        if (null != length) {
+            context.getClientResponse().withHeader("Content-Length", length)
+        }        
+        
         println "New response is:\n${respStr}"
     } else {
         println "Nothing found in storedResponse"
