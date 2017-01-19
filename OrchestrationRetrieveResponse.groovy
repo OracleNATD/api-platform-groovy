@@ -13,6 +13,7 @@ println "\n *** ${timestamp} Begin Request *** \n"
         def length = httpResponse.getHeader("Content-Length")
         if (null != length) {
             context.getClientResponse().withHeader("Content-Length", length)
+            println "Content-Length = ${length}"
         }        
         
         println "New response is:\n${respStr}"
