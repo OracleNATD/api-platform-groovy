@@ -9,7 +9,7 @@ def slurper = new groovy.json.JsonSlurper()
 def messageBody = (Map) slurper.parseText(body)
 
 if (messageBody['recordSetTotal'] == 0) {
-    
+       
     /***************************************************************************
      * API Platform Call 
      * Getting the Backend Service URL
@@ -26,16 +26,31 @@ if (messageBody['recordSetTotal'] == 0) {
      * API Platform Call 
      * Getting the request query parameters
      **************************************************************************/
-    params = context.clientRequest.getQueryParameters().toString()
+    params = context.clientRequest.getQueryParameters()
     
-    // Remove sorrounding brackets or braces
-    def cleanParams = params.substring(1, params.length()-1)    
+    // If paramaters were included, they Map needs to be converted to a string...
+    def paramString = "";
+    if (params != null) {
+        params.eachWithIndex { entry, i ->
+            if (i == 0)
+                paramString = "$entry.key=$entry.value"
+            else
+                paramString = "$paramString&$entry.key=$entry.value"    
+        }
+    }
+           
+    def resubmitUri = "${backendServiceURL}${apiPath}?${paramString}&minMatch=2<90%"
     
-    def resubmitUri = "${backendServiceURL}${apiPath}?${cleanParams}&minMatch=2%3C90%25"
+    // Rebuild the Uri to content with spaces in the path...
+    URL url = new URL(resubmitUri);
+    URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+    url = uri.toURL();
+    resubmitUri = url.toString();
     
     /***************************************************************************
     * API Platform Call
     * Resubmit the request to the Backend Service URL
     ***************************************************************************/
-    ((ExternalCalloutBuilder) context.createCallout().withRequestUrl(resubmitUri).withRequestMethod("GET")).build().send("storedResponse");               
+    ((ExternalCalloutBuilder) context.createCallout().withRequestUrl(resubmitUri).withRequestMethod("GET")).build().send("storedResponse");    
+           
 }

@@ -8,8 +8,8 @@ def body ='{"recordSetTotal": 0}'
 def apiPath='catalog'
 
 // Sample parameters for testing...
-def params = '{queryString=Florida%20Gator%20Pants}'
-//def params = ['queryString':'Florida%20Gator%20Pants']
+def params = ['queryString':'Florida%20Gator%20Pants', 'pageNumber':'1']
+println "queryString = ${params.get('queryString')}"
 
 //Sample Backend Service URL for testing...
 def backendServiceURL = 'https://nodeapicontainer-gse00001975.apaas.em2.oraclecloud.com/bealls'
@@ -52,18 +52,26 @@ if (messageBody['recordSetTotal'] == 0) {
      * API Platform Call 
      * Getting the request query parameters
      **************************************************************************/
-    params = context.clientRequest.getQueryParameters().toString()
+    params = context.clientRequest.getQueryParameters()
     println "receivedParams = ${params}"
-   
-    // Remove sorrounding brackets or braces
-    def cleanParams = params.substring(1, params.length()-1)    
-    println "cleanParams = ${cleanParams}"    
     
-    //def resubmitUri = "${backendServiceURL}${apiPath}?${params}&minMatch=2%3C90%25"
-    def resubmitUri = "${backendServiceURL}${apiPath}?${params}&minMatch=2<90%"
+    // If paramaters were included, they Map needs to be converted to a string...
+    def paramString = "";
+    if (params != null) {
+        params.eachWithIndex { entry, i ->
+            println "$i - Param: $entry.key Value: $entry.value"
+            if (i == 0)
+                paramString = "$entry.key=$entry.value"
+            else
+                paramString = "$paramString&$entry.key=$entry.value"    
+        }
+        println "paramString = ${paramString}"
+    }
+           
+    def resubmitUri = "${backendServiceURL}${apiPath}?${paramString}&minMatch=2<90%"
     println "resubmitUri = ${resubmitUri}"
     
-    // Rebuilt the Uri to content with spaces in the path...
+    // Rebuild the Uri to content with spaces in the path...
     URL url = new URL(resubmitUri);
     URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
     println "url.getRef() = ${url.getRef()}"
