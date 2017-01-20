@@ -9,6 +9,7 @@ def apiPath='catalog'
 
 // Sample parameters for testing...
 def params = '{queryString=Florida%20Gator%20Pants}'
+//def params = ['queryString':'Florida%20Gator%20Pants']
 
 //Sample Backend Service URL for testing...
 def backendServiceURL = 'https://nodeapicontainer-gse00001975.apaas.em2.oraclecloud.com/bealls'
@@ -53,12 +54,22 @@ if (messageBody['recordSetTotal'] == 0) {
      **************************************************************************/
     params = context.clientRequest.getQueryParameters().toString()
     println "receivedParams = ${params}"
-    
+   
     // Remove sorrounding brackets or braces
     def cleanParams = params.substring(1, params.length()-1)    
-    println "cleanParams = ${cleanParams}"
+    println "cleanParams = ${cleanParams}"    
     
-    def resubmitUri = "${backendServiceURL}${apiPath}?${cleanParams}&minMatch=2%3C90%25"
+    //def resubmitUri = "${backendServiceURL}${apiPath}?${params}&minMatch=2%3C90%25"
+    def resubmitUri = "${backendServiceURL}${apiPath}?${params}&minMatch=2<90%"
+    println "resubmitUri = ${resubmitUri}"
+    
+    // Rebuilt the Uri to content with spaces in the path...
+    URL url = new URL(resubmitUri);
+    URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+    println "url.getRef() = ${url.getRef()}"
+    println "uri = {$uri}"
+    url = uri.toURL();
+    resubmitUri = url.toString();
     println "resubmitUri = ${resubmitUri}"
     
     /***************************************************************************
