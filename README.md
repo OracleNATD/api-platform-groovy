@@ -12,5 +12,8 @@ This is a repository of Groovy script examples for the [Oracle API Platform Clou
 
 ### Response Policies
 - [Orchestration.groovy](https://github.com/OracleNATD/api-platform-groovy/blob/master/Orchestration.groovy) and [OrchestrationSetResponse.groovy](https://github.com/OracleNATD/api-platform-groovy/blob/master/OrchestrationRetrieveResponse.groovy) - These 2 policies demonstrate how a response can be evaluated and an alternative request submitted if the initial response wasn't as desired. For example, if a catalog search returns zero results, resubmit the search using a relaxed query match.
+
+### Additional Policies
+- [Groovy Script for API Platform](https://github.com/anishi1222/api-groovy)
  
 
